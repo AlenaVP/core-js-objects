@@ -114,8 +114,9 @@ function isEmptyObject(obj) {
  *    immutableObj.newProp = 'new';
  *    console.log(immutableObj) => {a: 1, b: 2}
  */
-function makeImmutable(/* obj */) {
-  throw new Error('Not implemented');
+function makeImmutable(obj) {
+  Object.freeze(obj);
+  return obj;
 }
 
 /**
@@ -128,8 +129,15 @@ function makeImmutable(/* obj */) {
  *    makeWord({ a: [0, 1], b: [2, 3], c: [4, 5] }) => 'aabbcc'
  *    makeWord({ H:[0], e: [1], l: [2, 3, 8], o: [4, 6], W:[5], r:[7], d:[9]}) => 'HelloWorld'
  */
-function makeWord(/* lettersObject */) {
-  throw new Error('Not implemented');
+function makeWord(lettersObject) {
+  return Object.entries(lettersObject)
+    .reduce((acc, [key, value]) => {
+      value.forEach((i) => {
+        acc[i] = key;
+      });
+      return acc;
+    }, [])
+    .join('');
 }
 
 /**
@@ -146,8 +154,45 @@ function makeWord(/* lettersObject */) {
  *    sellTickets([25, 25, 50]) => true
  *    sellTickets([25, 100]) => false (The seller does not have enough money to give change.)
  */
-function sellTickets(/* queue */) {
-  throw new Error('Not implemented');
+function sellTickets(queue) {
+  const cashier = { 25: 0, 50: 0, 100: 0 };
+  let hasChange = true;
+  queue.forEach((bill) => {
+    const change = bill > 25 ? bill - 25 : 0;
+    switch (change) {
+      case 25:
+        if (cashier[25] > 0) {
+          cashier[25] -= 1;
+        } else {
+          hasChange = false;
+        }
+        break;
+      case 50:
+        if (cashier[50] > 0) {
+          cashier[50] -= 1;
+        } else if (cashier[25] > 1) {
+          cashier[25] -= 2;
+        } else {
+          hasChange = false;
+        }
+        break;
+      case 75:
+        if (cashier[50] > 0 && cashier[25] > 0) {
+          cashier[50] -= 1;
+          cashier[25] -= 1;
+        } else if (cashier[25] > 2) {
+          cashier[25] -= 3;
+        } else {
+          hasChange = false;
+        }
+        break;
+      default:
+        break;
+    }
+    cashier[bill] += 1;
+  });
+
+  return hasChange;
 }
 
 /**
@@ -163,8 +208,12 @@ function sellTickets(/* queue */) {
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.getArea = function () {
+    return this.width * this.height;
+  };
 }
 
 /**
@@ -177,8 +226,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { height: 10, width: 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 /**
